@@ -8,6 +8,8 @@ module FbGraph
     include Connections::ReachEstimates
     include Connections::AdConnectionObjects
     include Connections::AdPreviews
+    include Connections::AdImages
+    include Connections::AdCreatives
 
     ATTRS = [
       :account_id,
@@ -47,5 +49,10 @@ module FbGraph
         self.users = attributes[:users].collect { |u| FbGraph::AdUser.new(u["uid"], u) }
       end
     end
+
+    def ad_credit_line!(options = {})
+      ad_credit_line = post options.merge(:connection => :adcreditline)
+    end
+
   end
 end

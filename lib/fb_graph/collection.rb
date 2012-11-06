@@ -8,6 +8,7 @@ module FbGraph
         {:data => collection, :count => collection.size}
       when Hash
         collection[:data] ||= []
+        collection[:data] = collection[:data].values if collection[:data].is_a?(Hash) # adimages has Hash, not an Array :(
         collection
       when nil
         collection = {:data => [], :count => 0}
