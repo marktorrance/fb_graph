@@ -4,6 +4,7 @@ require 'patch/rack/oauth2/util'
 require 'patch/rack/oauth2/client'
 require 'patch/rack/oauth2/access_token'
 
+
 module FbGraph
   VERSION = ::File.read(
     ::File.join(::File.dirname(__FILE__), '../VERSION')
@@ -67,6 +68,8 @@ require 'fb_graph/connections'
 require 'fb_graph/searchable'
 
 require 'fb_graph/action'
+require 'fb_graph/age_range'
+require 'fb_graph/device'
 require 'fb_graph/education'
 require 'fb_graph/location'
 require 'fb_graph/picture'
@@ -116,8 +119,10 @@ require 'fb_graph/notification'
 require 'fb_graph/order'
 require 'fb_graph/page'
 require 'fb_graph/photo'
+require 'fb_graph/cover'
 require 'fb_graph/place'
 require 'fb_graph/post'
+require 'fb_graph/promotable_post'
 require 'fb_graph/property'
 require 'fb_graph/question'
 require 'fb_graph/question_option'
@@ -130,6 +135,7 @@ require 'fb_graph/thread'
 require 'fb_graph/user'
 require 'fb_graph/user_achievement'
 require 'fb_graph/video'
+require 'fb_graph/offer'
 
 # Load after FbGraph::User
 require 'fb_graph/ad_user'

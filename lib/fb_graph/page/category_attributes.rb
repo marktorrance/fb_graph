@@ -1,8 +1,8 @@
 module FbGraph
   class Page
     module CategoryAttributes
-      @@attributes = {}
-      @@attributes[:raw] = [
+      @@category_attributes = {}
+      @@category_attributes[:raw] = [
         :affiliation,
         :artists_we_like,
         :attire,
@@ -11,7 +11,6 @@ module FbGraph
         :band_members,
         :bio,
         :booking_agent,
-        :can_post,
         :company_overview,
         :culinary_team,
         :current_location,
@@ -23,8 +22,6 @@ module FbGraph
         :hometown,
         :influences,
         :is_community_page,
-        :link,
-        :location,
         :mission,
         :mpg,
         :personal_info,
@@ -43,24 +40,24 @@ module FbGraph
         :website,
         :written_by
       ]
-      @@attributes[:symbols] = [
+      @@category_attributes[:symbols] = [
         :parking,
         :payment_options,
         :restaurant_services,
         :restaurant_specialties
       ]
-      @@attributes[:date] = [
+      @@category_attributes[:date] = [
         :birthday,
         :built,
         :founded,
         :release_date
       ]
-      @@attributes[:others] = [
+      @@category_attributes[:others] = [
         :checkin_count,
         :hours,
         :location
       ]
-      attr_accessor *@@attributes.values.flatten
+      attr_accessor *@@category_attributes.values.flatten
 
       def self.included(klass)
         klass.alias_method_chain :initialize, :category_specific_attributes
@@ -68,19 +65,17 @@ module FbGraph
 
       def initialize_with_category_specific_attributes(identifier, attributes = {})
         initialize_without_category_specific_attributes identifier, attributes
-        @@attributes[:raw].each do |key|
+        @@category_attributes[:raw].each do |key|
           self.send :"#{key}=", attributes[key]
         end
 
-        self.link ||= "https://www.facebook.com/#{username || identifier}"
-
-        @@attributes[:symbols].each do |key|
+        @@category_attributes[:symbols].each do |key|
           self.send :"#{key}=", []
           if attributes[key]
             self.send :"#{key}=", attributes[key].keys.collect(&:to_sym)
           end
         end
-        @@attributes[:date].each do |key|
+        @@category_attributes[:date].each do |key|
           date = if attributes[key]
             begin
               Date.parse attributes[key]
@@ -110,8 +105,11 @@ module FbGraph
             @hours[date][index][mode] = time
           end
         end
-        if attributes[:location]
-          @location = Venue.new(attributes[:location])
+        @location = case attributes[:location]
+        when Hash
+          Venue.new(attributes[:location])
+        when String
+          # ignore such non-structured data
         end
       end
     end
