@@ -3,8 +3,8 @@ module FbGraph
     include Connections::AdCreatives
     include Connections::ReachEstimates
 
-    attr_accessor :ad_id, :campaign_id, :name, :adgroup_status, :bid_type, :max_bid, :targeting, :creative, :creative_ids, :adgroup_id,
-      :end_time, :start_time, :updated_time, :bid_info, :disapprove_reason_descriptions, :view_tags
+    attr_accessor :campaign_id, :name, :adgroup_status, :bid_type, :targeting, :creative, :creative_ids,
+      :updated_time, :bid_info, :disapprove_reason_descriptions, :view_tags
 
     def initialize(identifier, attributes = {})
       super
@@ -31,19 +31,14 @@ module FbGraph
     protected
 
     def set_attrs(attributes)
-      %w(ad_id campaign_id name adgroup_status bid_type max_bid targeting creative creative_ids adgroup_id bid_info disapprove_reason_descriptions view_tags).each do |field|
+      %w(campaign_id name adgroup_status bid_type targeting creative creative_ids bid_info disapprove_reason_descriptions view_tags).each do |field|
         send("#{field}=", attributes[field.to_sym])
       end
 
-      # max_bid is string only when reloaded for some reason..
-      self.max_bid = max_bid.try(:to_i)
-
-      %w(start_time end_time updated_time).each do |field|
-        if val = attributes[field.to_sym]
-          # Handles integer timestamps and ISO8601 strings
-          time = Time.parse(val) rescue Time.at(val.to_i)
-          send("#{field}=", time)
-        end
+      if val = attributes[:updated_time]
+        # Handles integer timestamps and ISO8601 strings
+        time = Time.parse(val) rescue Time.at(val.to_i)
+        self.updated_time = time
       end
     end
   end
